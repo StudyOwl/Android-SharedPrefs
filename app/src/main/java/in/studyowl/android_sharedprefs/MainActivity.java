@@ -1,5 +1,6 @@
 package in.studyowl.android_sharedprefs;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,9 +18,20 @@ public class MainActivity extends AppCompatActivity {
     Button decrBtn = (Button) findViewById(R.id.decrement);
     Button incrBtn = (Button) findViewById(R.id.increment);
     Button storeBtn = (Button) findViewById(R.id.storeBtn);
+
+    final SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+    final SharedPreferences.Editor editor = prefs.edit();
+    final String counterKey = "counter";
+
+    // load the value from disk
+    // if not available make it zero
+    int counter = prefs.getInt(counterKey, 0);
+    // set the EditText value from disk before the activity starts
+    editText.setText(String.valueOf(counter));
+
     View.OnClickListener listener = new View.OnClickListener() {
       @Override public void onClick(View v) {
-        // get the text from edittext
+        // get the text from editText
         String value = editText.getText().toString();
         // convert it to integer
         int counter = Integer.parseInt(value);
@@ -31,7 +43,11 @@ public class MainActivity extends AppCompatActivity {
           counter++;
         } else if (v.getId() == R.id.storeBtn) {
           // if store button is clicked
-          Toast.makeText(MainActivity.this, "asd", Toast.LENGTH_SHORT).show();
+          // put the counter
+          editor.putInt(counterKey, counter);
+          // save the changes on ur disk
+          editor.apply();
+          Toast.makeText(MainActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
         }
         // finally set it back to the editText
         editText.setText(String.valueOf(counter));
